@@ -1,0 +1,14 @@
+name: explorer
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - ipython
+  - ipywidgets
+  - numpy
+  - matplotlib
+  - netcdf4
+  - h5py
+  - cartopy
+  - arm_pyart
