@@ -12,3 +12,4 @@ dependencies:
   - h5py
   - cartopy
   - arm_pyart
+  - pandas
