@@ -171,6 +171,10 @@ def build_animation(cdict):
     for odim_ffn in tqdm(filter_file_list, total=n_img): 
         _fast_plot(odim_ffn, cdict, img_path) 
 
+    #create image folder if requires
+    if not os.path.exists('images'):
+        os.mkdir('images')
+        
     #zip files and move to local directory
     now = datetime.now()
     img_zip_fn = radar_id_str + '_' + start_dt.strftime('%Y-%m-%d') + '.image_request.' + now.strftime("%d-%m-%Y_%H:%M:%S") + '.zip'
