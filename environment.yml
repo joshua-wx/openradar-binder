@@ -13,3 +13,5 @@ dependencies:
   - cartopy
   - arm_pyart
   - pandas
+  - tqdm
+  - adjusttext
