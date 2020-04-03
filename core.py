@@ -176,10 +176,11 @@ def build_animation(cdict):
     img_zip_fn = radar_id_str + '_' + start_dt.strftime('%Y-%m-%d') + '.image_request.' + now.strftime("%d-%m-%Y_%H:%M:%S") + '.zip'
     img_zip_ffn = './images/' + img_zip_fn
     #zip up
-    zip_cmd = 'zip -qj1'
-    files_to_zip = ' '.join(glob(img_path + '/*'))
-    cmd = ' '.join([zip_cmd, img_zip_ffn, files_to_zip])
-    os.system(cmd)
+    zipf = zipfile.ZipFile(img_zip_ffn, 'w', zipfile.ZIP_DEFLATED)
+    files_to_zip = glob(img_path + '/*')
+    for item in files_to_zip:
+        zipf.write(item)
+    zipf.close()
     
     #remove temp images
     os.system('rm -rf ' + img_path)
