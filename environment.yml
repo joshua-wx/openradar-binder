@@ -1,4 +1,4 @@
-name: explorer
+name: image_generator
 channels:
   - conda-forge
   - defaults
