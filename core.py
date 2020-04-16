@@ -134,7 +134,7 @@ def build_animation(cdict):
     #build request filename url 
     zip_fn       = radar_id_str + '_' + start_dt.strftime('%Y%m%d') + '.pvol.zip'
     zip_ffn      = '/tmp/' + zip_fn
-    request_url  = '/'.join([base_url, 'odim_pvol', radar_id_str, start_dt.strftime('%Y'), 'vol', zip_fn]) 
+    request_url  = '/'.join([base_url, radar_id_str, start_dt.strftime('%Y'), 'vol', zip_fn]) 
 
     #download the zip file 
     if not os.path.isfile(zip_ffn): 
