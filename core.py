@@ -24,6 +24,22 @@ warnings.simplefilter('ignore')
 
 #########################################################################
 
+def make_gif(files, output, delay=100, repeat=True,**kwargs):
+    """
+    Uses imageMagick to produce an animated .gif from a list of
+    picture files.
+    INPUT:
+        files: list of full file paths
+        output: full filename for output gif
+        delay: delay in ms between animation frames
+        repeat: Set to infinite loop
+    OUTPUT:
+        None
+    """
+    loop = -1 if repeat else 0
+    os.system('convert -delay %d -loop %d %s %s'
+              %(delay,loop," ".join(files),output))  
+
 def _read_csv(csv_ffn, header_line):
     """
     CSV reader used for the radar locations file (comma delimited)
@@ -112,7 +128,7 @@ def _fast_plot(odim_ffn, cdict, img_path):
     new_title = cdict['nice_radar_name'] + ' ' + current_title
     ax.set_title(new_title)
    
-    out_ffn = img_path + '/' + os.path.basename(odim_ffn)[:-3] + '.png' 
+    out_ffn = f'{img_path}/{os.path.basename(odim_ffn)[:-3]}_{cdict["field"]}.png' 
 
     plt.savefig(out_ffn, dpi=100)  # Saving figure. 
     plt.close()  # Release memory 
@@ -174,10 +190,16 @@ def build_animation(cdict):
     #create image folder if requires
     if not os.path.exists('images'):
         os.mkdir('images')
-        
+    
+    #create animation
+    now = datetime.now()
+    gif_ffn = './images/' + f'{radar_id_str}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.animation.{now.strftime("%d-%m-%Y_%H:%M:%S")}.gif'
+    files_to_animate = sorted(glob(img_path + '/*'))
+    make_gif(files_to_animate, gif_ffn, delay=100, repeat=True)
+    
     #zip files and move to local directory
     now = datetime.now()
-    img_zip_fn = radar_id_str + '_' + start_dt.strftime('%Y-%m-%d') + '.image_request.' + now.strftime("%d-%m-%Y_%H:%M:%S") + '.zip'
+    img_zip_fn = f'{radar_id_str}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.image_request.{now.strftime("%d-%m-%Y_%H:%M:%S")}.zip'
     img_zip_ffn = './images/' + img_zip_fn
     #zip up
     zipf = zipfile.ZipFile(img_zip_ffn, 'w', zipfile.ZIP_DEFLATED)
@@ -189,5 +211,8 @@ def build_animation(cdict):
     #remove temp images
     os.system('rm -rf ' + img_path)
     
-    local_file = FileLink(img_zip_ffn, result_html_prefix="Click here to download: ")
+    local_file = FileLink(img_zip_ffn, result_html_prefix="Click here to download zip of images: ")
+    display(local_file)
+    
+    local_file = FileLink(gif_ffn, result_html_prefix="Click here to download animation: ")
     display(local_file)
