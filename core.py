@@ -143,14 +143,14 @@ def build_animation(cdict):
     base_url     = 'http://dapds00.nci.org.au/thredds/fileServer/rq0' #base url for NCI dataset  
     
     #parse inputs 
-    radar_id_str = str(cdict['rid']).zfill(2) #convert radar id to a string and fill with a leading 0 if only one digit 
+    radar_id     = cdict['rid']
     start_dt     = datetime.strptime(cdict['rdate'] + ' ' + cdict['rtime'], '%Y/%m/%d %H:%M') 
     end_dt       = start_dt + timedelta(hours = cdict['rdur']) 
 
     #build request filename url 
-    zip_fn       = radar_id_str + '_' + start_dt.strftime('%Y%m%d') + '.pvol.zip'
+    zip_fn       = str(radar_id) + '_' + start_dt.strftime('%Y%m%d') + '.pvol.zip'
     zip_ffn      = '/tmp/' + zip_fn
-    request_url  = '/'.join([base_url, radar_id_str, start_dt.strftime('%Y'), 'vol', zip_fn]) 
+    request_url  = '/'.join([base_url, str(radar_id), start_dt.strftime('%Y'), 'vol', zip_fn]) 
 
     #download the zip file 
     if not os.path.isfile(zip_ffn): 
@@ -193,13 +193,13 @@ def build_animation(cdict):
     
     #create animation
     now = datetime.now()
-    gif_ffn = './images/' + f'{radar_id_str}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.animation.{now.strftime("%d-%m-%Y_%H:%M:%S")}.gif'
+    gif_ffn = './images/' + f'{radar_id}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.animation.{now.strftime("%d-%m-%Y_%H:%M:%S")}.gif'
     files_to_animate = sorted(glob(img_path + '/*'))
     make_gif(files_to_animate, gif_ffn, delay=100, repeat=True)
     
     #zip files and move to local directory
     now = datetime.now()
-    img_zip_fn = f'{radar_id_str}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.image_request.{now.strftime("%d-%m-%Y_%H:%M:%S")}.zip'
+    img_zip_fn = f'{radar_id}_{start_dt.strftime("%Y-%m-%d")}_{cdict["field"]}.image_request.{now.strftime("%d-%m-%Y_%H:%M:%S")}.zip'
     img_zip_ffn = './images/' + img_zip_fn
     #zip up
     zipf = zipfile.ZipFile(img_zip_ffn, 'w', zipfile.ZIP_DEFLATED)
